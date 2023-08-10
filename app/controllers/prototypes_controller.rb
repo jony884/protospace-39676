@@ -1,4 +1,9 @@
 class PrototypesController < ApplicationController
+  before_action :configure_permitted_parameters, if: :devise_controller?
+  before_action :set_prototype, only: [:edit, :show]
+  # before_action :authenticate_user!
+  before_action :move_to_index, only: [:edit, :update]
+  
   def index
     @prototypes = Prototype.all
   end
@@ -54,7 +59,8 @@ class PrototypesController < ApplicationController
   end
 
   def move_to_index
-    unless user_signed_in?
+    @prototype = Prototype.find(params[:id]) 
+    unless current_user == @prototype.user
       redirect_to action: :index
     end
   end
